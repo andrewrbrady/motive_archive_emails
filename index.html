@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Index of Markdown Files</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        #file-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #file-list li {
+            margin-bottom: 10px;
+        }
+        #file-list a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        #file-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Index of Markdown Files</h1>
+    <ul id="file-list">
+        <!-- The list of files will be dynamically inserted here -->
+    </ul>
+
+    <script>
+        async function fetchFileList() {
+            try {
+                const response = await fetch('https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO_NAME/contents/');
+                const data = await response.json();
+                const fileList = document.getElementById('file-list');
+                
+                data.forEach(item => {
+                    if (item.name.endsWith('.md') && item.name !== 'README.md') {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = item.name;
+                        a.textContent = item.name;
+                        li.appendChild(a);
+                        fileList.appendChild(li);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching file list:', error);
+                document.getElementById('file-list').innerHTML = '<li>Error loading file list. Please check the console for details.</li>';
+            }
+        }
+
+        fetchFileList();
+    </script>
+</body>
+</html>
