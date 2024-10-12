@@ -1,9 +1,32 @@
-# Theme settings
+# Theme settings (adjust as needed)
 remote_theme: pages-themes/primer
-plugins:
-  - jekyll-remote-theme
 
 # Site settings
-title: Motive Archive Emails
-description: Drafts of marketing emails for Motive Archive
-# Other settings can be added here
+title: Your Site Title
+description: Your site description
+
+# Build settings
+markdown: kramdown
+
+# Pagination settings
+paginate: 5
+paginate_path: "/email/page:num/"
+
+# Plugins
+plugins:
+  - jekyll-remote-theme
+  - jekyll-paginate
+
+# Collections
+collections:
+  email:
+    output: true
+    permalink: /email/:name
+
+# Defaults
+defaults:
+  - scope:
+      path: "email"
+      type: "email"
+    values:
+      layout: "post"
