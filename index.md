@@ -7,7 +7,7 @@ title: My GitHub Pages Site
 
 Here are some of my Markdown files:
 
-[Initial Email](email-241012-151709.md)
+[Initial Email](./email-241012-151709.md)
 
 ## About This Site
 
