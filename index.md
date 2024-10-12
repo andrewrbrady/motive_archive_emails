@@ -1,6 +1,6 @@
 ---
 layout: default
-title: My GitHub Pages Site
+title: Motive Archive Marketing Emails
 ---
 
 # Welcome to My GitHub Pages Site
