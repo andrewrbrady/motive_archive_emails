@@ -7,7 +7,6 @@ title: Motive Archive Marketing Emails
 
 Here are some of my Markdown files:
 
-[email-241012-165121](./email/email-241012-165121.md)
 [Initial Email](./email/email-241012-151709.md)
 
 ## About This Site
