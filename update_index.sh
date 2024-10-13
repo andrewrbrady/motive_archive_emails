@@ -1,43 +1,39 @@
 #!/bin/bash
 
-# File to update
-index_file="index.md"
+update_index_with_titles() {
+    local index_file="index.md"
+    local email_dir="./email"
+    local temp_file=$(mktemp)
 
-# Directory to search
-email_dir="./email"
+    # Function to extract title from YAML front matter
+    extract_title() {
+        local file="$1"
+        local title=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^title:' | sed 's/^title: *//;s/^"//;s/"$//')
+        if [ -z "$title" ]; then
+            title=$(basename "$file" .md)
+        fi
+        echo "$title"
+    }
 
-# Find all email files
-email_files=$(find "$email_dir" -type f -name "email-??????-??????.md" | sort)
+    # Copy content up to the email list header
+    sed '/^## Email List/q' "$index_file" > "$temp_file"
+    echo "## Email List" >> "$temp_file"
 
-# Read the current content of the index file
-content=$(cat "$index_file")
+    # Process each email markdown file
+    find "$email_dir" -name "email-*.md" | sort | while read -r file; do
+        filename=$(basename "$file")
+        title=$(extract_title "$file")
+        echo "[$title](./${file#./})" >> "$temp_file"
+    done
 
-# Find the line number where we should start inserting new links
-insert_line=$(grep -n "^Here are some of my Markdown files:" "$index_file" | cut -d: -f1)
-insert_line=$((insert_line + 1))
+    # Append the rest of the original content
+    sed -n '/^## About This Site/,$p' "$index_file" >> "$temp_file"
 
-# Temporary file for the updated content
-temp_file=$(mktemp)
+    # Replace the original file with the updated content
+    mv "$temp_file" "$index_file"
 
-# Copy the content up to the insert line to the temp file
-head -n "$insert_line" "$index_file" > "$temp_file"
+    echo "Index file updated successfully with correct titles from YAML front matter!"
+}
 
-# Process each email file
-for file in $email_files; do
-    # Extract just the filename
-    filename=$(basename "$file")
-    
-    # Check if the file is already in the index
-    if ! grep -q "$filename" "$index_file"; then
-        # If not, add it to the temp file
-        echo "[${filename%.md}](./email/$filename)" >> "$temp_file"
-    fi
-done
-
-# Append the rest of the original content
-tail -n +$((insert_line + 1)) "$index_file" >> "$temp_file"
-
-# Replace the original file with the updated content
-mv "$temp_file" "$index_file"
-
-echo "Index file updated successfully!"
+# Call the function
+update_index_with_titles
